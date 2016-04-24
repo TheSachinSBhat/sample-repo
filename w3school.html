@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>W3Schools Google Maps Tutorial</title>
+	<script src="http://maps.googleapis.com/maps/api/js"></script>
+</head>
+<body>
+	<div id="googleMap" style="width:1200px;height:700px;"></div>
+	<script>
+		/* Represents the Map object */
+		var map;
+
+		/* Object that represents Custom Bus Marker */
+		var busMarker;
+
+		var busLocation = new google.maps.LatLng(18.52592091234, 73.82753751221);
+
+		/* Method that initializes the Map Object */
+		function initialize() {
+			debugger;
+			/* Stores the map properties */
+			var mapProp = {
+				center: new google.maps.LatLng(18.52592091234, 73.82753751221),
+				zoom: 18,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+
+
+			map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+
+			/* Add a custom marker on the map */
+			busMarker = new google.maps.Marker({
+				position: busLocation,
+				icon: './bus_18_2x.png',
+				map: map
+			});
+
+		}
+
+		/* Event listener for Window Load event */
+		google.maps.event.addDomListener(window, 'load', initialize);
+
+		/* Update the location of the Bus Marker */
+		window.setInterval(function () {
+			debugger;
+			/// call your function here
+			busLocation = getNewCoordinate(busLocation, -10, 0);
+			busMarker.setPosition(busLocation);
+			google.maps.event.trigger(map, 'resize');
+		}, 1000);
+
+		function getNewCoordinate(position, northOffset, eastOffset) {
+
+			//Position, decimal degrees
+			var latitude = position.lat();
+			var longitude = position.lng();
+
+			//Earth’s radius, sphere
+			R = 6378137
+
+			// PI Value
+			PI = 3.14159265
+
+			//offsets in meters
+			dn = northOffset
+			de = eastOffset
+
+			//Coordinate offsets in radians
+			dLat = dn / R
+			dLon = de / (R * Math.cos(PI * latitude / 180))
+
+			//OffsetPosition, decimal degrees
+			newlatitude = latitude + dLat * 180 / PI
+			newlongitude = longitude + dLon * 180 / PI
+
+			var newLocation = new google.maps.LatLng(newlatitude, newlongitude);
+			return newLocation;
+		}
+		
+	</script>
+</body>
+</html>
